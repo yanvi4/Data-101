@@ -13,4 +13,5 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 print("Hello world")
+print("## This is a markdown file")
 ```
