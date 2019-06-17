@@ -1,0 +1,105 @@
+---
+title: "Project 1 - Loan"
+author: Hye Young Park
+date: June 16th, 2019
+output: html_document
+---
+Source: https://www.kaggle.com/wendykan/lending-club-loan-data
+
+## Load the Library
+```{r}
+library(dplyr)
+```
+
+Here is data regarding loans issued from "lending-club-loan-data". First of all, let's look at all the columns of data.
+
+## Load the Sheet
+```{r}
+loan<-read.csv("C:/Users/illya/Downloads/loan.csv")
+```
+
+## Dimensions and Structure of Dataset
+```{r}
+dim(loan)
+str(loan)
+```
+
+## First 6 Complete Rows and Last 6 rows
+```{r}
+head(loan)
+tail(loan)
+```
+
+## Removing Missing Values
+
+To make the data tidy, we are going to remove NA values. There are two ways to do that. One of them is using loan[complete.cases(loan),] and the other one is using na.omit(loan).
+
+```{r}
+loan_complete <- loan[complete.cases(loan),]
+dim(loan_complete)
+loan_complete <- na.omit(loan)
+dim(loan_complete)
+tail(loan_complete, 6)
+```
+
+## Organizing the Data
+
+We are looking at the first few columns in order to get a better feel for the data. Besides, the column of funded_amnt will be removed because the value for funded_amnt is same as the value of loan_amnt. Removing other columns
+as they're irrelevant
+
+```{r}
+loan_complete1 <- select(loan_complete, loan_amnt:annual_inc)
+loan_complete1$funded_amnt <- NULL
+loan_complete1$installment <- NULL
+loan_complete1$sub_grade <- NULL
+loan_complete1$grade <- NULL
+head(loan_complete1)
+```
+
+## Removing Small Loans (< 10K)
+
+There is a lot of data, so we're trimming it down to
+loan amounts greather than 10 thousand dollars to take a look
+at some things closer.
+
+```{r}
+filtered_loan_amnt <- filter(loan_complete1, loan_amnt > 10000)
+head(filtered_loan_amnt, 30)
+dim(filtered_loan_amnt)
+```
+
+## Subsetting
+
+Let's take a look at loans for which the term is 36 months
+
+```{r}
+term <- subset(filtered_loan_amnt, term == " 36 months")
+str(term)
+```
+
+Take a look at annual income below 60k 
+
+```{r}
+below_sixty <- subset(term, annual_inc < 60000)
+dim(below_sixty)
+```
+
+and above 60k to see
+the different populations who took out 36 month loans
+
+```{r}
+above_sixty <- subset(term, annual_inc > 60000)
+dim(above_sixty)
+```
+
+
+## Reordering the Data
+
+We can arrange the data to be sorted by loan amount and look at the
+bottom 10 values
+
+```{r}
+head(loan_complete1, 10)
+loan_amnt_organized <- arrange(filtered_loan_amnt, desc(loan_amnt))
+tail(loan_amnt_organized, 10)
+```
