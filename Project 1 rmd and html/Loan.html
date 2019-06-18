@@ -489,14 +489,14 @@ $(document).ready(function () {
 </div>
 <div id="removing-missing-values" class="section level2">
 <h2>Removing Missing Values</h2>
-<p>To make the data tidy, we are going to remove NA values. There are two ways to do that. One of them is using loan[complete.cases(loan),] and the other one is using na.omit(loan).</p>
+<p>To make the data tidy, we are going to remove NA values. There are two ways to do that. One of them is using loan[complete.cases(loan),] and the other one is using na.omit(loan). Note: na.omit removes the rows with NA in them but preserves the row numbers</p>
 <pre class="r"><code>loan_complete &lt;- loan[complete.cases(loan),]
 dim(loan_complete)</code></pre>
 <pre><code>## [1] 9981   20</code></pre>
 <pre class="r"><code>loan_complete &lt;- na.omit(loan)
 dim(loan_complete)</code></pre>
 <pre><code>## [1] 9981   20</code></pre>
-<pre class="r"><code>tail(loan_complete, 6)</code></pre>
+<pre class="r"><code>tail(loan_complete)</code></pre>
 <pre><code>##      loan_amnt funded_amnt funded_amnt_inv       term int_rate installment
 ## 9994     12000       12000           12000  36 months    10.33      389.07
 ## 9995     10000       10000            9975  36 months     8.81      317.12
@@ -528,7 +528,7 @@ dim(loan_complete)</code></pre>
 </div>
 <div id="organizing-the-data" class="section level2">
 <h2>Organizing the Data</h2>
-<p>We are looking at the first few columns in order to get a better feel for the data. Besides, the column of funded_amnt will be removed because the value for funded_amnt is same as the value of loan_amnt. Removing other columns as they’re irrelevant</p>
+<p>We are looking at the first few columns in order to get a better feel for the data. Besides, the column of funded_amnt will be removed because the value for funded_amnt is same as the value of loan_amnt. We’re also removing other columns as they’re irrelevant.</p>
 <pre class="r"><code>loan_complete1 &lt;- select(loan_complete, loan_amnt:annual_inc)
 loan_complete1$funded_amnt &lt;- NULL
 loan_complete1$installment &lt;- NULL

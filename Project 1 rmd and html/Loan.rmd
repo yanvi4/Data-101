@@ -33,19 +33,20 @@ tail(loan)
 ## Removing Missing Values
 
 To make the data tidy, we are going to remove NA values. There are two ways to do that. One of them is using loan[complete.cases(loan),] and the other one is using na.omit(loan).
+Note: na.omit removes the rows with NA in them but preserves the row numbers
 
 ```{r}
 loan_complete <- loan[complete.cases(loan),]
 dim(loan_complete)
 loan_complete <- na.omit(loan)
 dim(loan_complete)
-tail(loan_complete, 6)
+tail(loan_complete)
 ```
 
 ## Organizing the Data
 
-We are looking at the first few columns in order to get a better feel for the data. Besides, the column of funded_amnt will be removed because the value for funded_amnt is same as the value of loan_amnt. Removing other columns
-as they're irrelevant
+We are looking at the first few columns in order to get a better feel for the data. Besides, the column of funded_amnt will be removed because the value for funded_amnt is same as the value of loan_amnt. We're also removing other columns
+as they're irrelevant.
 
 ```{r}
 loan_complete1 <- select(loan_complete, loan_amnt:annual_inc)
