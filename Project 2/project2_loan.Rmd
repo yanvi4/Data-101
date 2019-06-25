@@ -1,0 +1,123 @@
+---
+title: "Project 2 - Loan"
+author: Hye Young Park
+date: June 21th, 2019
+output: html_document
+---
+Source: https://www.kaggle.com/wendykan/lending-club-loan-data
+
+Here is data regarding loans issued from "lending-club-loan-data". 
+We are interested in seeing if the loan amount is affected
+by annual income, and if so, how?
+```{r}
+library(dplyr)
+library(package = "lattice")
+library(ggplot2)
+```
+
+## 1.	Formulate your question
+Following the EDA checklist, let's formulate our question.
+Does annual income affect the size of the loan amount funded?
+
+## 2.	Read in your data
+```{r}
+loan<-read.csv("C:/Users/illya/Downloads/loan.csv")
+```
+
+## 3.	Check the packaging
+```{r}
+nrow(loan)
+ncol(loan)
+```
+
+
+## 4.	Run str()
+```{r}
+str(loan)
+```
+
+## 5.	Look at the top and the bottom of your data
+```{r}
+head(loan)
+tail(loan)
+```
+
+## 6.	Check your n’s (the count)
+```{r}
+#what loan amounts
+table(loan$loan_amnt)
+
+#how many different incomes?
+select(loan, annual_inc) %>% unique %>% nrow 
+```
+
+
+## 7.	Validate with at least one external data source
+```{r}
+#check standards
+summary(loan$annual_inc)
+
+#look at deciles of the data
+quantile(loan$annual_inc, seq(0, 1, 0.1)) 
+```
+
+## 8.	Try the easy solution first
+```{r}
+ranking <- group_by(loan, loan_amnt) %>%  
+  summarize(Median.Income = median(annual_inc)) %>% 
+  as.data.frame %>%  
+  arrange(desc(loan_amnt))
+head(ranking,10)
+
+#one outlier (in terms of income) who took out a large loan 
+filter(loan, loan_amnt == 39200) %>% nrow
+
+#number of people who took out the highest loan
+filter(loan, loan_amnt == 40000) %>% nrow
+
+tail(ranking,10)
+```
+
+## 9.	Challenge your solution
+Not necessary as easy solution was good enough for our purposes.
+
+## 10. Follow up
+We found that there was a tendency for people with larger incomes to take out larger
+loans in terms of amount.
+
+## Ggplot 2 graphs and visualization
+Next we'll look at some data regarding loan term and interest rates.
+This will show that people tend to take out smaller loans for shorter terms.
+We see that 50% of the people who took a 36 month loan had the Loan Amount < 10,000
+We also see that no one who took out a 60 month loan took a loan that was < 10,000
+
+````{r}
+boxplot(loan_amnt ~ term, loan, xlab="Loan Term", ylab="Loan Amount",col.axis="blue",col.lab="red")
+```
+
+
+Here we see a histogram of the annual income. It's skewed right so we use median as our
+measure of average income in the previous sections
+```{r}
+hist(loan$annual_inc, breaks = 100, col = "blue")
+```
+
+Here is a fun plot showing the amount of loans by term
+```{r}
+qplot(loan_amnt, data = loan, binwidth=1000, fill = term)
+```
+
+Here are two graphs, one for each term. They show the histograms for the interest rate for each of the terms
+```{r}
+qplot(int_rate, data = loan, facets = .~term, fill = term) + ggtitle("Loan Interest by term")
+```
+
+A simple bar chart of how many loans were taken out in each term
+```{r}
+ggplot(data = loan) + 
+  geom_bar(mapping = aes(x = term, fill= term))
+```
+
+
+
+
